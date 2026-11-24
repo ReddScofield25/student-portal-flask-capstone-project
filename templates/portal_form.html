@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Student Portal Form{% endblock %}
+{% block nav_portal %}active{% endblock %}
+
+{% block content %}
+<div class="container narrow">
+  <div class="form-shell">
+
+    <!--
+      BACKEND TODO ─────────────────────────────────────────────
+      • This form POSTs to the 'save_student' route (method="post").
+      • enctype="multipart/form-data" is REQUIRED for the image upload.
+      • On the server: validate every field, save the image to
+        static/uploads/, store its filename in the DB, then redirect
+        to the students list.
+      ───────────────────────────────────────────────────────────
+    -->
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-danger">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('save_student') }}" method="post" enctype="multipart/form-data">
+
+      <h1 class="form-title">Student Portal Form</h1>
+      <p class="hint">Please fill in all required information</p>
+
+      <div class="section-bar">Personal Information</div>
+
+      <div class="grid-2">
+        <div class="field full">
+          <label for="image">Upload Image</label>
+          <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+
+        <div class="field">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" name="firstname" placeholder="Enter First Name" value="{{ form_data.get('firstname', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="field">
+          <label for="middlename">Middle Name</label>
+          <input type="text" id="middlename" name="middlename" placeholder="Enter Middle Name" value="{{ form_data.get('middlename', '') if form_data else '' }}">
+        </div>
+
+        <div class="field">
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" name="lastname" placeholder="Enter Last Name" value="{{ form_data.get('lastname', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter Email Address" value="{{ form_data.get('email', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="field">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dob" value="{{ form_data.get('dob', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="field radio-row">
+          <label><input type="radio" name="gender" value="male" {{ 'checked' if form_data and form_data.get('gender', '') == 'male' }} required> Male</label>
+          <label><input type="radio" name="gender" value="female" {{ 'checked' if form_data and form_data.get('gender', '') == 'female' }}> Female</label>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="Enter Phone Number" value="{{ form_data.get('phone', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="field">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" placeholder="Enter Address" value="{{ form_data.get('address', '') if form_data else '' }}" required></textarea>
+        </div>
+
+        <!--
+          ASYNC TODO (1/2) ───────────────────────────────────────
+          These two selects must be filled with Asynchronous JS.
+          They start EMPTY (only a placeholder option).
+          In static/js/locations.js you will:
+            • on page load  → fetch states  → fill #state
+            • on #state change → fetch that state's LGAs → fill #lga
+          Do NOT hard-code the options here.
+          ─────────────────────────────────────────────────────────
+        -->
+        <div class="field">
+          <label for="state">State of Origin</label>
+          <select id="state" name="state" value="" required>
+            <option value="" disabled selected>{{ form_data.get('state', 'Select State') if form_data else 'Select State' }}</option>]
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="lga">Local Government</label>
+          <select id="lga" name="lga" required>
+            <option  value="" disabled selected>{{ form_data and form_data.get('lga', 'Select Local Government') if form_data else 'Select Local Government' }}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="nextofkin">Next of Kin</label>
+          <input type="text" id="nextofkin" name="nextofkin" placeholder="Enter the name of Next of Kin" value="{{ form_data.get('nextofkin', '') if form_data else '' }}" required>
+        </div>
+      </div>
+
+      <div class="section-bar">Academic Related Information</div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label for="jamb">JAMB Score</label>
+          <input type="number" id="jamb" name="jamb" min="0" max="400" placeholder="Enter JAMB Score" value="{{ form_data.get('jamb', '') if form_data else '' }}" required>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn btn-dark">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/locations.js') }}"></script>
+{% endblock %}

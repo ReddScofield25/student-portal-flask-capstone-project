@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Startocode Student Portal{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+  <section class="hero">
+    <div class="copy">
+      <h1>Student Main Portal</h1>
+      <p class="tagline">Unlock the Student Portal registration. Join us today for your online courses.</p>
+      <a href="{{ url_for('portal') }}" class="btn btn-primary">Get Started</a>
+    </div>
+    <div class="art">
+      <img src="{{ url_for('static', filename='img/hero.svg') }}" alt="Students learning online">
+    </div>
+  </section>
+</div>
+{% endblock %}

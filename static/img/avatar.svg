@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Student photo placeholder">
+  <rect width="200" height="200" fill="#C8772E"/>
+  <circle cx="100" cy="78" r="38" fill="#F0E2D0"/>
+  <path d="M100 122c-42 0-66 28-66 64v14h132v-14c0-36-24-64-66-64Z" fill="#F0E2D0"/>
+  <path d="M62 70a38 38 0 0 1 76 0c0-6-4-30-38-30S62 64 62 70Z" fill="#3A2417"/>
+</svg>

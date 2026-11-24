@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>{% block title %}Startocode Student Portal{% endblock %}</title>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="brand" href="{{ url_for('home') }}">
+      <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Startocode">
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu"
+            onclick="document.getElementById('nav-links').classList.toggle('open')">&#9776;</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">Home</a></li>
+      <li><a href="{{ url_for('portal') }}" class="{% block nav_portal %}{% endblock %}">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    All rights reserved &copy; Startocode {{ current_year or 2026 }}
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

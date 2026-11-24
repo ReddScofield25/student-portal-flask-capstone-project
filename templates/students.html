@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}All Students{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="alert-info">Info! All students records table</div>
+
+  <!--
+    BACKEND TODO ─────────────────────────────────────────────
+    This is a GET form. Read the query params on the server
+    (search, status, gender, jamb) and filter the records you
+    pass into `students`. Leaving fields blank returns everything.
+    ───────────────────────────────────────────────────────────
+  -->
+  <form class="filter-bar" method="get" action="{{ url_for('students') }}">
+    <input type="text" name="search" placeholder="Search record by name only" value="{{ request.args.get('search', '') }}">
+    <select name="status">
+      <option value="">Select Admission Status</option>
+      <option value="admitted">Admitted</option>
+      <option value="undecided">Undecided</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <select name="gender">
+      <option value="">Select Gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <input type="number" name="jamb" placeholder="Enter JAMB Score" value="{{ request.args.get('jamb', '') }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <div class="table-wrap">
+    <table class="records">
+      <thead>
+        <tr>
+          <th>S/N</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>JAMB Score</th>
+          <th>Admission Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!--
+          BACKEND TODO ───────────────────────────────────────────
+          `students` is the list of records you pass from the route.
+          Each item is expected to expose: id, firstname, middlename,
+          lastname, gender, jamb, status.
+          Adjust attribute access (student.x vs student['x']) to match
+          whether you return objects or dicts.
+          ─────────────────────────────────────────────────────────
+        -->
+        {% for student in students %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ student.firstname }} {% if student.middlename %}{{ student.middlename }}{% endif %} {{ student.lastname }}</td>
+          <td>{{ student.gender }}</td>
+          <td>{{ student.jamb }}</td>
+          <td><span class="pill {{ student.status }}">{{ student.status }}</span></td>
+          <td>
+            <a class="btn-view" href="{{ url_for('student_detail', id=student.id) }}" title="View details">
+              &#128065; View
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr class="empty-row"><td colspan="6">No student records yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

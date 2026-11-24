@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ student.firstname }} {{ student.lastname }} — Details{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!--
+    BACKEND TODO ─────────────────────────────────────────────
+    `student` is a single record fetched by id. It is expected to
+    expose: id, image, firstname, middlename, lastname, email,
+    gender, phone, dob, address, state (or state_name), lga (or
+    lga_name), nextofkin, jamb, status.
+    The image filename is stored in the DB; the file itself lives
+    in static/uploads/. Fall back to the placeholder when empty.
+    ───────────────────────────────────────────────────────────
+  -->
+  <div class="detail-grid">
+
+    <aside class="id-card">
+      {% if student.image %}
+        <img src="{{ url_for('static', filename='uploads/' ~ student.image) }}" alt="Student photo">
+      {% else %}
+        <img src="{{ url_for('static', filename='img/avatar.svg') }}" alt="No photo">
+      {% endif %}
+      <div class="name">{{ student.firstname }} {{ student.lastname }}</div>
+      <span class="pill {{ student.status }}">{{ student.status }}</span>
+    </aside>
+
+    <div class="detail-body">
+
+      <section class="detail-section">
+        <h3>Personal Information</h3>
+        <div class="detail-rows">
+          <div class="row"><span class="k">Email</span><span class="v">{{ student.email }}</span></div>
+          <div class="row"><span class="k">Gender</span><span class="v">{{ student.gender }}</span></div>
+          <div class="row"><span class="k">Phone Number</span><span class="v">{{ student.phone }}</span></div>
+          <div class="row"><span class="k">Date of Birth</span><span class="v">{{ student.dob }}</span></div>
+          <div class="row"><span class="k">Address</span><span class="v">{{ student.address }}</span></div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <h3>Other Information</h3>
+        <div class="detail-rows">
+          <div class="row"><span class="k">State of Origin</span><span class="v">{{ student.state_name or student.state }}</span></div>
+          <div class="row"><span class="k">Local Government</span><span class="v">{{ student.lga_name or student.lga }}</span></div>
+        </div>
+      </section>
+
+      <section class="detail-section">
+        <h3>Academic Related Information</h3>
+        <div class="detail-rows">
+          <div class="row"><span class="k">Next of Kin</span><span class="v">{{ student.nextofkin }}</span></div>
+          <div class="row"><span class="k">JAMB Score</span><span class="v">{{ student.jamb }}</span></div>
+          <div class="row"><span class="k">Status</span><span class="v" id="current-status">{{ student.status }}</span></div>
+          <div class="row">
+            <span class="k">Change Status</span>
+            <!--
+              ASYNC TODO (2/2) ─────────────────────────────────────
+              Changing this dropdown must update the status
+              ASYNCHRONOUSLY (no page reload). Wiring lives in
+              static/js/status.js. The data-student-id below gives
+              your JS the id to send to the backend.
+              ───────────────────────────────────────────────────────
+            -->
+            <span class="status-change">
+              <select id="status-select" data-student-id="{{ student.id }}">
+                <option value="" disabled selected>Change status</option>
+                <option value="admitted">Admitted</option>
+                <option value="undecided">Undecided</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span id="status-feedback"></span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/status.js') }}"></script>
+{% endblock %}

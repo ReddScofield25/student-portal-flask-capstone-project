@@ -70,8 +70,8 @@ sudo apt install python3-dev default-libmysqlclient-dev build-essential pkg-conf
 ### 2. Clone and create a virtual environment
 
 ```bash
-git clone https://github.com/reddscofield25/[repo-name].git
-cd [repo-name]
+git clone https://github.com/reddscofield25/student-portal-flask-capstone-project.git
+cd student-portal-flask-capstone-project
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt

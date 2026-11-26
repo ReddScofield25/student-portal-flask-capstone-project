@@ -8,7 +8,7 @@ from email_validator import validate_email, EmailNotValidError
 import json
 import os
 
-load_dotenv()
+load_dotenv()   # Load dotenv to use os.getenv
 
 app = Flask(__name__)
 
@@ -18,6 +18,7 @@ DATA_FILE = os.path.join(BASE_DIR, "static", "data", "states-lgas.json")
 ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 ALLOWED_STATUSES = {"admitted", "undecided", "rejected"}
 
+# Configure MySQL credentials in a secure way using os.getenv
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
@@ -38,16 +39,17 @@ def load_states_data():
 # Pages
 # ════════════════════════════════════════════════════════════════════
 
+# Home Page
 @app.route("/")
 def home():
     return render_template("index.html")
 
-
+# Portal Forms Page
 @app.route("/portal")
 def portal():
     return render_template("portal_form.html")
 
-
+# Form Submission Handler
 @app.route("/save_student", methods=["POST"])
 def save_student():
     # The submitted fields are read here so you can see their names.
@@ -66,6 +68,8 @@ def save_student():
         "jamb":       request.form.get("jamb", "").strip(),
         "status":     "undecided",           # every new student starts undecided
     }
+
+    # Validate the uploaded image and sanitize its filename
     image = request.files.get("image")
     student["image"] = filename = None
     if image and image.filename:
@@ -73,15 +77,20 @@ def save_student():
         student["image"] = filename
         image.save(os.path.join(UPLOAD_FOLDER, filename))
 
+    #   Check the email looks valid
     if email := student["email"]:
         try:
             validate_email(email)
         except EmailNotValidError as e:
             flash(str(e))
             return render_template("portal_form.html", form_data=request.form)
+    
+    #   Make sure jamb is a number in range
+    if not student["jamb"].isdigit() or not (100 <= int(student["jamb"]) <= 400):
+        flash("JAMB score must be a number between 100 and 400.")
+        return render_template("portal_form.html", form_data=request.form)
 
-    #   Reject empty required fields; check the email looks valid; make sure
-    #   jamb is a number in range. If anything is wrong, re-render the form
+    #   Reject empty required fields. If anything is wrong, re-render the form
     #   with an error message instead of saving.
     error = []
     for detail in student:
@@ -118,7 +127,7 @@ def save_student():
 
     return redirect(url_for("students"))
 
-66
+# Students List Page
 @app.route("/students")
 def students():
     # These filters arrive in the query string; any of them may be blank.
@@ -154,7 +163,7 @@ def students():
 
     return render_template("students.html", students=student_list)
 
-
+# Student Details Page
 @app.route("/student/<int:id>")
 def student_detail(id):
     #   FETCH ONE STUDENT BY id FROM YOUR DATABASE
@@ -173,7 +182,7 @@ def student_detail(id):
         abort(404)             # no such student yet
     return render_template("student_details.html", student=student)
 
-
+# Student Status Update Page
 @app.route("/update_status", methods=["POST"])
 def update_status():
     # status.js sends JSON; this also accepts a normal form post.
